@@ -73,7 +73,7 @@ deploy:
       - "src/packages/reaper_*_amd64.deb"
     skip_cleanup: true
     on:
-      branch: "push-master-releases-test"
+      branch: "push-master-releases"
       condition: $CASSANDRA_VERSION = "2.1.19" &&  "x${GRIM_MIN}" = "x"
 
 notifications:
