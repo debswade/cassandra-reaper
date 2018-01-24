@@ -3,7 +3,7 @@ language: java
 jdk:
   - oraclejdk8
 
-if: tag != master-snapshot
+if: tag != master-snapshot AND tag !~ ^untagged
 
 env:
   global:
