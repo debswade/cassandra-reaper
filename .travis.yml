@@ -74,6 +74,7 @@ deploy:
     target_commitish: $TRAVIS_COMMIT
     tag_name: master-snapshot
     prerelease: true
+    overwrite: true
     file:
       - "cassandra-reaper-master-release.tar.gz"
       - "src/packages/reaper-*-1.x86_64.rpm"
