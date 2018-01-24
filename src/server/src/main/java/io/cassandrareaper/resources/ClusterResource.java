@@ -17,6 +17,7 @@ package io.cassandrareaper.resources;
 import io.cassandrareaper.AppContext;
 import io.cassandrareaper.ReaperException;
 import io.cassandrareaper.core.Cluster;
+import io.cassandrareaper.core.Node;
 import io.cassandrareaper.jmx.JmxProxy;
 import io.cassandrareaper.resources.view.ClusterStatus;
 import io.cassandrareaper.resources.view.NodesStatus;
@@ -145,9 +146,7 @@ public final class ClusterResource {
     if (cluster.isPresent()) {
       try (JmxProxy jmxProxy =
           context.jmxConnectionFactory.connectAny(
-              cluster.get(),
-              context.config.getJmxConnectionTimeoutInSeconds(),
-              context.config.getJmxCredentialsForCluster(clusterName))) {
+              cluster.get(), context.config.getJmxConnectionTimeoutInSeconds())) {
         tablesByKeyspace = jmxProxy.listTablesByKeyspace();
         jmxProxy.close();
       } catch (RuntimeException e) {
@@ -230,10 +229,16 @@ public final class ClusterResource {
     try (JmxProxy jmxProxy =
         context.jmxConnectionFactory.connectAny(
             Optional.absent(),
-            seedHosts,
-            context.config.getJmxConnectionTimeoutInSeconds(),
-            context.config.getJmxCredentialsForCluster(
-                parseClusterNameFromSeedHost(seedHostInput).or("")))) {
+            seedHosts
+                .stream()
+                .map(
+                    host ->
+                        Node.builder()
+                            .withClusterName(parseClusterNameFromSeedHost(host).or(""))
+                            .withHostname(parseSeedHost(host))
+                            .build())
+                .collect(Collectors.toList()),
+            context.config.getJmxConnectionTimeoutInSeconds())) {
 
       clusterName = Optional.of(jmxProxy.getClusterName());
       partitioner = Optional.of(jmxProxy.getPartitioner());
@@ -283,9 +288,16 @@ public final class ClusterResource {
       try (JmxProxy jmxProxy =
           context.jmxConnectionFactory.connectAny(
               Optional.absent(),
-              newSeeds,
-              context.config.getJmxConnectionTimeoutInSeconds(),
-              context.config.getJmxCredentialsForCluster(clusterName))) {
+              newSeeds
+                  .stream()
+                  .map(
+                      host ->
+                          Node.builder()
+                              .withClusterName(clusterName)
+                              .withHostname(parseSeedHost(host))
+                              .build())
+                  .collect(Collectors.toList()),
+              context.config.getJmxConnectionTimeoutInSeconds())) {
 
         Optional<List<String>> liveNodes = Optional.of(jmxProxy.getLiveNodes());
         newSeeds = liveNodes.get().stream().collect(Collectors.toSet());
@@ -362,9 +374,13 @@ public final class ClusterResource {
       try (JmxProxy jmxProxy =
           context.jmxConnectionFactory.connectAny(
               Optional.absent(),
-              seeds,
-              context.config.getJmxConnectionTimeoutInSeconds(),
-              context.config.getJmxCredentialsForCluster(clusterName))) {
+              seeds
+                  .stream()
+                  .map(
+                      host ->
+                          Node.builder().withClusterName(clusterName).withHostname(host).build())
+                  .collect(Collectors.toList()),
+              context.config.getJmxConnectionTimeoutInSeconds())) {
 
         Optional<String> allEndpointsState = Optional.fromNullable(jmxProxy.getAllEndpointsState());
         Optional<Map<String, String>> simpleStates =
@@ -418,11 +434,20 @@ public final class ClusterResource {
     return nodesStatus;
   }
 
+  /*
+   * Creates a Set of seed hosts based on the comma delimited string passed
+   * as argument when adding a cluster.
+   */
   static Set<String> parseSeedHosts(String seedHost) {
-    return Arrays.stream(seedHost.split(","))
-        .map(String::trim)
-        .map(host -> host.split("@")[0])
-        .collect(Collectors.toSet());
+    return Arrays.stream(seedHost.split(",")).map(String::trim).collect(Collectors.toSet());
+  }
+
+  /*
+   * Due to constraints with JMX credentials, we can get seed hosts
+   * with the cluster name attached, after a @ character.
+   */
+  static String parseSeedHost(String seedHost) {
+    return seedHost.split("@")[0];
   }
 
   /*

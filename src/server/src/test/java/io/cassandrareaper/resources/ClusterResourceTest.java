@@ -15,9 +15,9 @@
 package io.cassandrareaper.resources;
 
 import io.cassandrareaper.AppContext;
-import io.cassandrareaper.ReaperApplicationConfiguration.JmxCredentials;
 import io.cassandrareaper.ReaperException;
 import io.cassandrareaper.core.Cluster;
+import io.cassandrareaper.core.Node;
 import io.cassandrareaper.jmx.JmxConnectionFactory;
 import io.cassandrareaper.jmx.JmxProxy;
 import io.cassandrareaper.jmx.RepairStatusHandler;
@@ -180,7 +180,8 @@ public final class ClusterResourceTest {
   public void testParseSeedHostWithClusterName() {
     String seedHostStringList = "127.0.0.1@cluster1 , 127.0.0.2@cluster1,  127.0.0.3@cluster1";
     Set<String> seedHostSet = ClusterResource.parseSeedHosts(seedHostStringList);
-    Set<String> seedHostExpectedSet = Sets.newHashSet("127.0.0.2", "127.0.0.1", "127.0.0.3");
+    Set<String> seedHostExpectedSet =
+        Sets.newHashSet("127.0.0.2@cluster1", "127.0.0.1@cluster1", "127.0.0.3@cluster1");
 
     assertEquals(seedHostSet, seedHostExpectedSet);
   }
@@ -212,10 +213,7 @@ public final class ClusterResourceTest {
         new JmxConnectionFactory() {
           @Override
           protected JmxProxy connect(
-              Optional<RepairStatusHandler> handler,
-              String host,
-              int connectionTimeout,
-              Optional<JmxCredentials> jmxCredentials)
+              Optional<RepairStatusHandler> handler, Node host, int connectionTimeout)
               throws ReaperException {
             return jmxProxy;
           }
