@@ -3,7 +3,10 @@ language: java
 jdk:
   - oraclejdk8
 
-if: tag != master-snapshot AND tag !~ ^untagged
+branches:
+  except:
+    - /^untagged-.*$/
+    - /^master-snapshot.*$/
 
 env:
   global:
@@ -67,7 +70,9 @@ deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN
     file_glob: true
-    name: "master"
+    name: "master snapshot"
+    target_commitish: $TRAVIS_COMMIT
+    tag_name: master-snapshot
     prerelease: true
     file:
       - "cassandra-reaper-master-release.tar.gz"
