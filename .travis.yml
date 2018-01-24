@@ -65,6 +65,8 @@ deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN
     file_glob: true
+    name: "master"
+    prerelease: true
     file:
       - "cassandra-reaper-master-release.tar.gz"
       - "src/packages/reaper-*-1.x86_64.rpm"
@@ -72,6 +74,7 @@ deploy:
     skip_cleanup: true
     on:
       branch: "push-master-releases"
+      condition: $CASSANDRA_VERSION = "2.1.19" &&  "x${GRIM_MIN}" = "x"
 
 notifications:
   webhooks:
