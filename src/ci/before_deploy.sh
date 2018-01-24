@@ -7,7 +7,7 @@ if [ "${TRAVIS_BRANCH}" = "push-master-releases" -a "${CASSANDRA_VERSION}" = "2.
 then
     git config --global user.email "builds@travis-ci.com"
     git config --global user.name "Travis CI"
-    git tag -d master-snapshot || echo "no pre existing master-snapshot tag"
+    git tag -d master-snapshot || echo "no pre existing master-snapshot tag"
     git tag master-snapshot -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER [skip ci]"
     mkdir cassandra-reaper-master
     mkdir cassandra-reaper-master/server

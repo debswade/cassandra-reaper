@@ -18,10 +18,10 @@ case "${TEST_TYPE}" in
         MAVEN_OPTS="-Xmx1g" mvn clean install
         if [ "x${GRIM_MIN}" = "x" ]
         then
-            mvn surefire:test -Dtest=ReaperIT
-            mvn surefire:test -Dtest=ReaperH2IT
-            mvn surefire:test -Dtest=ReaperPostgresIT
-            mvn surefire:test -DsurefireArgLine="-Xmx1g" -Dtest=ReaperCassandraIT
+            #mvn surefire:test -Dtest=ReaperIT
+            #mvn surefire:test -Dtest=ReaperH2IT
+            #mvn surefire:test -Dtest=ReaperPostgresIT
+            #mvn surefire:test -DsurefireArgLine="-Xmx1g" -Dtest=ReaperCassandraIT
         else
             mvn surefire:test -DsurefireArgLine="-Xmx1g" -Dtest=ReaperCassandraIT -Dgrim.reaper.min=${GRIM_MIN} -Dgrim.reaper.max=${GRIM_MAX}
         fi
