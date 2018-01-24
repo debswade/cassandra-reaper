@@ -3,6 +3,8 @@ language: java
 jdk:
   - oraclejdk8
 
+if: tag != master-snapshot
+
 env:
   global:
     - LOCAL_JMX=no
