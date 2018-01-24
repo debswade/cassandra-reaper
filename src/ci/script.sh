@@ -22,6 +22,7 @@ case "${TEST_TYPE}" in
             #mvn surefire:test -Dtest=ReaperH2IT
             #mvn surefire:test -Dtest=ReaperPostgresIT
             #mvn surefire:test -DsurefireArgLine="-Xmx1g" -Dtest=ReaperCassandraIT
+            echo "to be changed"
         else
             mvn surefire:test -DsurefireArgLine="-Xmx1g" -Dtest=ReaperCassandraIT -Dgrim.reaper.min=${GRIM_MIN} -Dgrim.reaper.max=${GRIM_MAX}
         fi
