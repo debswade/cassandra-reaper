@@ -12,8 +12,8 @@ case "${TEST_TYPE}" in
     "ccm")
         ccm create test -v $CASSANDRA_VERSION > /dev/null
         ccm populate --vnodes -n 2 > /dev/null
-        mkdir -p /etc/cassandra/
-        cp src/ci/jmxremote.password /etc/cassandra/
+        sudo mkdir -p /etc/cassandra/
+        sudo cp src/ci/jmxremote.password /etc/cassandra/jmxremote.password
         chmod 400 src/ci/jmxremote.password
         #sed -i 's/jmxremote.authenticate=true/jmxremote.authenticate=false/' /home/travis/.ccm/test/node1/conf/cassandra-env.sh
         #sed -i 's/jmxremote.authenticate=true/jmxremote.authenticate=false/' /home/travis/.ccm/test/node2/conf/cassandra-env.sh
