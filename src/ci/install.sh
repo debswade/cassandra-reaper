@@ -10,11 +10,12 @@ case "${TEST_TYPE}" in
         exit 1
         ;;
     "ccm")
-        ccm create test -v $CASSANDRA_VERSION > /dev/null
-        ccm populate --vnodes -n 2 > /dev/null
         sudo mkdir -p /etc/cassandra/
         sudo cp src/ci/jmxremote.password /etc/cassandra/jmxremote.password
-        chmod 400 src/ci/jmxremote.password
+        sudo chmod 400 /etc/cassandra/jmxremote.password
+        sudo ls -l /etc/cassandra/jmxremote.password
+        ccm create test -v $CASSANDRA_VERSION > /dev/null
+        ccm populate --vnodes -n 2 > /dev/null
         #sed -i 's/jmxremote.authenticate=true/jmxremote.authenticate=false/' /home/travis/.ccm/test/node1/conf/cassandra-env.sh
         #sed -i 's/jmxremote.authenticate=true/jmxremote.authenticate=false/' /home/travis/.ccm/test/node2/conf/cassandra-env.sh
         sed -i 's/#MAX_HEAP_SIZE="4G"/MAX_HEAP_SIZE="192m"/' /home/travis/.ccm/test/node1/conf/cassandra-env.sh
