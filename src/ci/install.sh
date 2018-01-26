@@ -15,8 +15,8 @@ case "${TEST_TYPE}" in
         ls -l /home/travis/.local/jmxremote.password
         ccm create test -v $CASSANDRA_VERSION > /dev/null
         ccm populate --vnodes -n 2 > /dev/null
-        sed -i 's/etc\/cassandra\/jmxremote.access/home\/travis\/.local\/jmxremote.password/' /home/travis/.ccm/test/node1/conf/cassandra-env.sh
-        sed -i 's/etc\/cassandra\/jmxremote.access/home\/travis\/.local\/jmxremote.password/' /home/travis/.ccm/test/node2/conf/cassandra-env.sh
+        sed -i 's/etc\/cassandra\/jmxremote.password/home\/travis\/.local\/jmxremote.password/' /home/travis/.ccm/test/node1/conf/cassandra-env.sh
+        sed -i 's/etc\/cassandra\/jmxremote.password/home\/travis\/.local\/jmxremote.password/' /home/travis/.ccm/test/node2/conf/cassandra-env.sh
         sed -i 's/#MAX_HEAP_SIZE="4G"/MAX_HEAP_SIZE="192m"/' /home/travis/.ccm/test/node1/conf/cassandra-env.sh
         sed -i 's/#MAX_HEAP_SIZE="4G"/MAX_HEAP_SIZE="192m"/' /home/travis/.ccm/test/node2/conf/cassandra-env.sh
         sed -i 's/_timeout_in_ms:.*/_timeout_in_ms: 60000/' /home/travis/.ccm/test/node1/conf/cassandra.yaml
